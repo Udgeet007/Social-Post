@@ -10,7 +10,7 @@ app.get('/',(req,res)=>{
   res.send('Har Har Mahadev!')
 });
 
-app.use('/users',userRouter);
+app.use('/api/users',userRouter);
 
 // app.post("/create",(req,res)=>{
 //   const {name,email,password} = req.body;

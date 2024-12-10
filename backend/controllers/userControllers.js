@@ -1,6 +1,8 @@
+const jwt = require('jsonwebtoken');
 const userCollection = require("../models/UserCollection");
 var bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
+let JWT_SECRET = "HarHarMahadev"
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -46,17 +48,17 @@ const loginUser = async (req, res) => {
   }
 
   try {
-    let checkUser = await userCollection.findOne({ email: email });
-    if (checkUser) {
-      let comparePassword = bcrypt.compareSync(password, checkUser.password); // true
+    let findUser = await userCollection.findOne({ email: email });
+    if (findUser) {
+      let comparePassword = bcrypt.compareSync(password, findUser .password); // true
       if (comparePassword) {
-        res
-          .status(200)
-          .json({
-            msg: "User Login Successfully",
-            success: true,
-            user: checkUser,
-          });
+        let token = jwt.sign({_id:findUser._id}, JWT_SECRET);
+        res.status(200).json({
+          msg: "User Login Successfully",
+          success: true,
+          user:findUser,
+          token
+        });
       } else {
         res.status(401).json({ msg: "invalid password", success: false });
       }
@@ -66,23 +68,57 @@ const loginUser = async (req, res) => {
         .json({ msg: "user not found please sign up", success: false });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({
-        msg: "error in login user",
-        success: false,
-        error: error.message,
-      });
+    res.status(500).json({
+      msg: "error in login user",
+      success: false,
+      error: error.message,
+    });
   }
 };
 
-const updateUser = async (req, res) => {};
+const updateUser = async(req,res)=>{
 
-const deleteUser = async (req, res) => {};
+  const _id  = req.user
+  console.log(_id)
+
+  if(_id!==req.params._id){
+  return res.json({msg:"not authorized to update this account", success:false})
+  }
+ 
+  let {name , password} = req.body
+
+try {
+  if(password){
+      var hashedPassword = bcrypt.hashSync( password ,salt )
+  }
+  // let data = await userCollection.updateOne(  find , update )
+  // let data = await userCollection.updateOne(  {name:"abc"} , {$set:{name:"bdc"}} )
+  let data = await userCollection.findByIdAndUpdate(_id ,{name:name , password:hashedPassword} );
+  res.json({msg:"user updated successfull", success:true})
+} catch (error) {
+  res.json({msg:"error in updating user", success:false, error:error.message})
+}
+}
+
+
+const deleteUser = async (req, res) => {
+  let id = req.params._id;
+
+  try {
+    await userCollection.findByIdAndDelete(id);
+    res.json({ msg: "user deleted successfully", success: true });
+  } catch (error) {
+    res.json({
+      msg: "error in deleting user",
+      success: false,
+      error: error.message,
+    });
+  }
+};
 
 const getAllUsers = async (req, res) => {
-  const {email} = req.body;
- try {
+  const { email } = req.body;
+  try {
     // If email is provided, filter by email; otherwise, fetch all users
     const query = email ? { email: email } : {};
     const allUsers = await userCollection.find(query);
@@ -101,14 +137,14 @@ const getAllUsers = async (req, res) => {
       success: true,
       users: allUsers,
     });
- } catch (error) {
-   // Handle errors
-   return res.status(500).json({
-    msg: "Error in retrieving users",
-    success: false,
-    error: error.message,
-  }); 
- }
+  } catch (error) {
+    // Handle errors
+    return res.status(500).json({
+      msg: "Error in retrieving users",
+      success: false,
+      error: error.message,
+    });
+  }
 };
 
 module.exports = { createUser, deleteUser, loginUser, updateUser, getAllUsers };
