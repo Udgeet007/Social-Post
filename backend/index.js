@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const port = 8990;
+const cors = require('cors');
 
 const connection = require('./db'); //connectToDB ... function
 connection();
 const userRouter = require('./routes/userRoutes');
+app.use(cors());
 app.use(express.json());
 app.get('/',(req,res)=>{
   res.send('Har Har Mahadev!')
