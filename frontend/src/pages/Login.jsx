@@ -1,30 +1,33 @@
-import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from 'axios'
+import axios from "axios";
+import UserContext from "../context/UserContext";
 
 const Login = () => {
+  let userCtx = useContext(UserContext);
+
   let navigate = useNavigate();
 
   let emailRef = useRef();
-  let passwordRef  = useRef();
-
+  let passwordRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     let obj = {
       email: emailRef.current.value,
-      password: passwordRef.current.value
-    }
+      password: passwordRef.current.value,
+    };
     console.log(obj);
-    let res = await axios.post("http://localhost:8990/api/users/login",obj);
+    let res = await axios.post("http://localhost:8990/api/users/login", obj);
     console.log(res.data);
-    if(res.data.success){
-      navigate('/')
-      toast.success(res.data.msg, {position:"top-center", theme:"dark"});
-    }else{
-      toast.error(res.data.msg, {position:"top-center", theme:"colored"}); 
+    if (res.data.success) {
+      userCtx.AddUser(res.data);
+      navigate("/");
+      toast.success(res.data.msg, { position: "top-center", theme: "dark" });
+    } else {
+      toast.error(res.data.msg, { position: "top-center", theme: "colored" });
     }
   };
 
@@ -108,12 +111,12 @@ const Login = () => {
           </div>
           <div className="flex items-center justify-between mt-4">
             <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4" />
-            <a
-              href="#"
+            <Link
+              to="/register"
               className="text-xs text-gray-500 uppercase dark:text-gray-400 hover:underline"
             >
               or sign up
-            </a>
+            </Link>
             <span className="w-1/5 border-b dark:border-gray-600 md:w-1/4" />
           </div>
         </div>
@@ -123,7 +126,6 @@ const Login = () => {
 };
 
 export default Login;
-
 
 // using onChange Method
 
