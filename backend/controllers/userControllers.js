@@ -1,8 +1,10 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const userCollection = require("../models/UserCollection");
 var bcrypt = require("bcryptjs");
 var salt = bcrypt.genSaltSync(10);
-let JWT_SECRET = "HarHarMahadev"
+let JWT_SECRET = "HarHarMahadev";
+var randomstring = require("randomstring");
+const nodemailer = require("nodemailer");
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -50,14 +52,14 @@ const loginUser = async (req, res) => {
   try {
     let findUser = await userCollection.findOne({ email: email });
     if (findUser) {
-      let comparePassword = bcrypt.compareSync(password, findUser .password); // true
+      let comparePassword = bcrypt.compareSync(password, findUser.password); // true
       if (comparePassword) {
-        let token = jwt.sign({_id:findUser._id}, JWT_SECRET);
+        let token = jwt.sign({ _id: findUser._id }, JWT_SECRET);
         res.status(200).json({
           msg: "User Login Successfully",
           success: true,
-          user:findUser,
-          token
+          user: findUser,
+          token,
         });
       } else {
         res.status(401).json({ msg: "invalid password", success: false });
@@ -76,30 +78,38 @@ const loginUser = async (req, res) => {
   }
 };
 
-const updateUser = async(req,res)=>{
+const updateUser = async (req, res) => {
+  const _id = req.user;
+  console.log(_id);
 
-  const _id  = req.user
-  console.log(_id)
-
-  if(_id!==req.params._id){
-  return res.json({msg:"not authorized to update this account", success:false})
+  if (_id !== req.params._id) {
+    return res.json({
+      msg: "not authorized to update this account",
+      success: false,
+    });
   }
- 
-  let {name , password} = req.body
 
-try {
-  if(password){
-      var hashedPassword = bcrypt.hashSync( password ,salt )
+  let { name, password } = req.body;
+
+  try {
+    if (password) {
+      var hashedPassword = bcrypt.hashSync(password, salt);
+    }
+    // let data = await userCollection.updateOne(  find , update )
+    // let data = await userCollection.updateOne(  {name:"abc"} , {$set:{name:"bdc"}} )
+    let data = await userCollection.findByIdAndUpdate(_id, {
+      name: name,
+      password: hashedPassword,
+    });
+    res.json({ msg: "user updated successfull", success: true });
+  } catch (error) {
+    res.json({
+      msg: "error in updating user",
+      success: false,
+      error: error.message,
+    });
   }
-  // let data = await userCollection.updateOne(  find , update )
-  // let data = await userCollection.updateOne(  {name:"abc"} , {$set:{name:"bdc"}} )
-  let data = await userCollection.findByIdAndUpdate(_id ,{name:name , password:hashedPassword} );
-  res.json({msg:"user updated successfull", success:true})
-} catch (error) {
-  res.json({msg:"error in updating user", success:false, error:error.message})
-}
-}
-
+};
 
 const deleteUser = async (req, res) => {
   let id = req.params._id;
@@ -147,4 +157,68 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-module.exports = { createUser, deleteUser, loginUser, updateUser, getAllUsers };
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    let user = await userCollection.findOne({ email });
+  // console.log(user);
+
+  if (user) {
+    let resetToken = randomstring.generate(30);
+    // res.send(resetToken);
+    user.resetPasswordToken = resetToken;
+    await user.save();
+
+    const main = await sendEmail(email, resetToken);
+    res.json({msg:"please check your email for password reset", success:true});
+
+    // let updateUser = await userCollection.findByIdAndUpdate(user._id,{resetPasswordToken:resetToken});
+    // console.log(resetToken);
+  } else {
+    res.status().json({ msg: "email does not exists", success: false });
+  }
+  } catch (error) {
+    res.status(404).json({msg:"error in forget password", success:false, error:error.message});
+  } 
+};
+
+function sendEmail(email, resetToken) {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false, // true for port 465, false for other ports
+    auth: {
+      user: "udgeetbhatt271@gmail.com",
+      pass: "yhhh tnoz yxet geem",
+    },
+    tls: {
+      rejectUnauthorized: false, // Ignore self-signed certificate errors
+    },
+  });
+
+  // async..await is not allowed in global scope, must use a wrapper
+  async function main() {
+    // send mail with defined transport object
+    const info = await transporter.sendMail({
+      from: "udgeetbhatt271@gmail.com", // sender address
+      to: email, // list of receivers
+      subject: "Password reset Request", // Subject line
+      text: `Please click the link below to choose a new password: \n "http://localhost:8990/api/users/resetToken/${resetToken}"`, // plain text body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
+  }
+
+  main().catch(console.error);
+}
+
+module.exports = {
+  createUser,
+  deleteUser,
+  loginUser,
+  updateUser,
+  getAllUsers,
+  forgetPassword,
+};
