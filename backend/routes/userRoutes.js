@@ -6,6 +6,9 @@ const {
   deleteUser,
   getAllUsers,
   forgetPassword,
+  resetPassword,
+  passwordReset
+   
 } = require("../controllers/userControllers");
 const checkToken = require("../middleware/checkToken");
 const router = express.Router();
@@ -16,5 +19,7 @@ router.put("/update/:_id", checkToken, updateUser);
 router.delete("/delete/:_id",checkToken ,deleteUser);
 router.get("/getall", getAllUsers);
 router.post("/forgetPassword", forgetPassword);
+router.get('/resetToken/:token',resetPassword);
+router.post('/resetToken/:token',passwordReset);
 
 module.exports = router;

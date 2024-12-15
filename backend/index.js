@@ -8,6 +8,8 @@ connection();
 const userRouter = require('./routes/userRoutes');
 app.use(cors());
 app.use(express.json());
+
+app.set('view engine', 'ejs');
 app.get('/',(req,res)=>{
   res.send('Har Har Mahadev!')
 });

@@ -5,8 +5,8 @@ const Navbar = () => {
   let userCtx = useContext(UserContext);
   // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-
+  // const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   return (
     <div>
       <nav className="bg-gradient-to-r fixed top-0 left-0 right-0 from-blue-500 via-indigo-500 to-purple-500 shadow-md z-50">
@@ -25,7 +25,7 @@ const Navbar = () => {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            <a href="#" className="text-white hover:text-gray-200">
+            {/* <a href="#" className="text-white hover:text-gray-200">
               Home
             </a>
             <a href="#" className="text-white hover:text-gray-200">
@@ -34,10 +34,10 @@ const Navbar = () => {
             <a href="#" className="text-white hover:text-gray-200">
               Contact
             </a>
-            <button onClick={() => userCtx.logout()} className="block px-4 py-2 hover:bg-gray-300">Logout</button>
+            <button onClick={() => userCtx.logout()} className="block px-4 py-2 hover:bg-gray-300">Logout</button> */}
 
             {/* Account Dropdown */}
-            <div className="relative">
+            {/* <div className="relative">
               <button
                 onClick={() => setIsAccountDropdownOpen(!isAccountDropdownOpen)}
                 className="text-white hover:text-gray-200 focus:outline-none py-2 px-4 bg-blue-700 rounded-md"
@@ -67,8 +67,30 @@ const Navbar = () => {
                   </a>
                 </div>
               )}
-            </div>
+            </div> */}
+              {/* Profile Picture */}
+          <div className="relative ">
+              <img onClick={()=>setShowDropdown(!showDropdown)} className="w-10 h-10 rounded-full" src="https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0=" alt="" />
+
+            { showDropdown === true && 
+              <div className="dropDownBox absolute top-[120%] right-0  bg-gray-400 p-5">
+                <ul>
+                  <li  className="border-2 py-2 px-5 border-gary-700"><button>Profile</button></li>
+                  <li className="border-2 py-2 px-5 border-b-gary-700">
+                    <button className="bg-green-950 px-3 py-2 text-white rounded-md">Login</button>
+                  </li>
+                  <li className="border-2 py-2 px-5 border-b-gary-700">
+                    <button className="bg-blue-950 px-3 py-2 text-white rounded-md">Signup</button>
+                  </li>
+                  <li onClick={() => userCtx.logout()} className="border-2 py-2 px-5 border-b-gary-700">
+                    
+                    <button className="bg-green-950 px-3 py-2 text-white rounded-md">Logout</button>
+                  </li>
+                </ul>
+              </div>}
           </div>
+          </div>
+        
 
           {/* Mobile Menu Button */}
           <button
@@ -139,6 +161,7 @@ const Navbar = () => {
                       Logout
                     </a>
                   </div>
+                
                 )}
               </div>
             </div>

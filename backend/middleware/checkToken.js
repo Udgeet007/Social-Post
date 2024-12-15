@@ -25,3 +25,12 @@ const checkToken = (req, res, next) => {
 };
 
 module.exports = checkToken;
+
+
+
+// let obj = {
+//     name:'abc',
+//     age:45
+// }
+
+// obj.course = "fullstack"

@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const userCollection = require("../models/UserCollection");
 var bcrypt = require("bcryptjs");
-var salt = bcrypt.genSaltSync(10);
+var salt = bcrypt.genSaltSync(10); // Generate salt for hashing
 let JWT_SECRET = "HarHarMahadev";
 var randomstring = require("randomstring");
 const nodemailer = require("nodemailer");
@@ -162,25 +162,34 @@ const forgetPassword = async (req, res) => {
 
   try {
     let user = await userCollection.findOne({ email });
-  // console.log(user);
+    // console.log(user);
 
-  if (user) {
-    let resetToken = randomstring.generate(30);
-    // res.send(resetToken);
-    user.resetPasswordToken = resetToken;
-    await user.save();
+    if (user) {
+      let resetToken = randomstring.generate(30);
+      // res.send(resetToken);
+      user.resetPasswordToken = resetToken;
+      await user.save();
 
-    const main = await sendEmail(email, resetToken);
-    res.json({msg:"please check your email for password reset", success:true});
+      const main = await sendEmail(email, resetToken);
+      res.json({
+        msg: "please check your email for password reset",
+        success: true,
+      });
 
-    // let updateUser = await userCollection.findByIdAndUpdate(user._id,{resetPasswordToken:resetToken});
-    // console.log(resetToken);
-  } else {
-    res.status().json({ msg: "email does not exists", success: false });
-  }
+      // let updateUser = await userCollection.findByIdAndUpdate(user._id,{resetPasswordToken:resetToken});
+      // console.log(resetToken);
+    } else {
+      res.status().json({ msg: "email does not exists", success: false });
+    }
   } catch (error) {
-    res.status(404).json({msg:"error in forget password", success:false, error:error.message});
-  } 
+    res
+      .status(404)
+      .json({
+        msg: "error in forget password",
+        success: false,
+        error: error.message,
+      });
+  }
 };
 
 function sendEmail(email, resetToken) {
@@ -214,6 +223,47 @@ function sendEmail(email, resetToken) {
   main().catch(console.error);
 }
 
+const resetPassword = async (req, res) => {
+  let token = req.params.token;
+  let user = await userCollection.findOne({ resetPasswordToken: token });
+  if (user) {
+    res.render("resetPassword", { token });
+  } else {
+    res.send("token expired");
+  }
+};
+
+const passwordReset = async (req, res) => {
+  let token = req.params.token;
+  let newPassword = req.body.newPassword;
+
+  try {
+    let user = await userCollection.findOne({ resetPasswordToken: token });
+
+    if (user) {
+      let hashedPassword = bcrypt.hashSync(newPassword, salt);
+      user.password = hashedPassword;
+      user.resetPasswordToken = null; // Invalidate the token after password reset
+      await user.save();
+      res
+        .status(200)
+        .json({ msg: "Password updated successfully", success: true });
+    } else {
+      res
+        .status(400)
+        .json({ msg: "Token has expired or is invalid", success: false });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({
+        msg: "Internal server error",
+        success: false,
+        error: error.message,
+      });
+  }
+};
+
 module.exports = {
   createUser,
   deleteUser,
@@ -221,4 +271,6 @@ module.exports = {
   updateUser,
   getAllUsers,
   forgetPassword,
+  resetPassword,
+  passwordReset,
 };
