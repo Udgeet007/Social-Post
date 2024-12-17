@@ -5,7 +5,8 @@ const cors = require('cors');
 
 const connection = require('./db'); //connectToDB ... function
 connection();
-const userRouter = require('./routes/userRoutes');
+let userRouter = require('./routes/userRoutes');
+let postRouter = require('./routes/postRoutes');
 app.use(cors());
 app.use(express.json());
 
@@ -15,6 +16,8 @@ app.get('/',(req,res)=>{
 });
 
 app.use('/api/users',userRouter);
+app.use('/api/posts', postRouter);
+
 
 // app.post("/create",(req,res)=>{
 //   const {name,email,password} = req.body;
