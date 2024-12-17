@@ -1,8 +1,13 @@
 import { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   let userCtx = useContext(UserContext);
+  console.log(userCtx);
+  let login = userCtx.userInfo.login;
+
+  let navigate = useNavigate();
   // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   // const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
@@ -68,29 +73,53 @@ const Navbar = () => {
                 </div>
               )}
             </div> */}
-              {/* Profile Picture */}
-          <div className="relative ">
-              <img onClick={()=>setShowDropdown(!showDropdown)} className="w-10 h-10 rounded-full" src="https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0=" alt="" />
+            {/* Profile Picture */}
+            <div className="relative ">
+              <img
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="w-10 h-10 rounded-full"
+                src="https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0="
+                alt=""
+              />
 
-            { showDropdown === true && 
-              <div className="dropDownBox absolute top-[120%] right-0  bg-gray-400 p-5">
-                <ul>
-                  <li  className="border-2 py-2 px-5 border-gary-700"><button>Profile</button></li>
-                  <li className="border-2 py-2 px-5 border-b-gary-700">
-                    <button className="bg-green-950 px-3 py-2 text-white rounded-md">Login</button>
-                  </li>
-                  <li className="border-2 py-2 px-5 border-b-gary-700">
-                    <button className="bg-blue-950 px-3 py-2 text-white rounded-md">Signup</button>
-                  </li>
-                  <li onClick={() => userCtx.logout()} className="border-2 py-2 px-5 border-b-gary-700">
-                    
-                    <button className="bg-green-950 px-3 py-2 text-white rounded-md">Logout</button>
-                  </li>
-                </ul>
-              </div>}
+              {showDropdown === true && (
+                <div className="dropDownBox  absolute top-[120%] right-0 bg-gradient-to-r  from-blue-500 via-purple-500 to-pink-500 ">
+                  <ul>
+                    {login === true && (
+                      <li className=" border-b-2 border-b-black py-2 px-5 ">
+                        <button>Profile</button>
+                      </li>
+                    )}
+                    {login === false && (
+                      <li className=" border-b-2 border-b-black  py-2 px-5 ">
+                        <button className="" onClick={() => navigate("/login")}>
+                          Login
+                        </button>
+                      </li>
+                    )}
+                    {login === true && (
+                      <li
+                        onClick={() => userCtx.logout()}
+                        className=" border-b-2 border-b-black  py-2 px-5 "
+                      >
+                        <button className="">Logout</button>
+                      </li>
+                    )}
+                    {login === false && (
+                      <li className=" border-b-2 border-b-black  py-2 px-5 ">
+                        <button
+                          onClick={() => navigate("/register")}
+                          className=""
+                        >
+                          Signup
+                        </button>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
-          </div>
-        
 
           {/* Mobile Menu Button */}
           <button
@@ -161,7 +190,6 @@ const Navbar = () => {
                       Logout
                     </a>
                   </div>
-                
                 )}
               </div>
             </div>

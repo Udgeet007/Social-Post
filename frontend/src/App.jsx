@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Navbar from "./components/Navbar";
 import { useContext } from "react";
 import UserContext from "./context/UserContext";
+import ForgetPassword from "./pages/ForgetPassword";
 
 function App() {
 // let login = true;
@@ -27,6 +28,7 @@ console.log(userCtx);
           <Route path="/" element={login===true? <Home /> : <Navigate to="/login"/>} />
           <Route path="/register" element={login===false? <Signup /> : <Navigate to='/'/>} />
           <Route path="/login" element={login===false?<Login />: <Navigate to='/'/>} />
+          <Route path="/forgetpassword" element={<ForgetPassword/>}/>
         </Routes>
         <ToastContainer />
       </BrowserRouter>  
