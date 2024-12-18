@@ -1,9 +1,10 @@
+import Sidebar from "../components/Sidebar"
 
 
 const Home = () => {
   return (
     <div>
-      <h1 className="text-white bg-red-500  ">This is Home Page</h1>
+      <Sidebar/>
     </div>
   )
 }
