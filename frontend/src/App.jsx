@@ -20,7 +20,7 @@ console.log(userCtx);
   return (
     <>
       <BrowserRouter>
-      <div  className="mt-[100px] mb-[60px]">
+      <div  className="mt-[75px] mb-[60px]">
          <Navbar/>
       </div>
      

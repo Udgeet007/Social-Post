@@ -29,7 +29,12 @@ const deletePost = async(req,res) =>{
 }
 
 const getAllPost = async(req,res) =>{
-  res.send("create function is running!");
+ try {
+  let posts = await PostCollection.find().populate({path:"userId", select:'name profilePic'});  //userid jaige usercollections se saare details utha kr leaiigi.
+  res.status(200).json({msg:"all data fetched successfully", success:true, posts});
+ } catch (error) {
+  res.json({msg:"error in getting all posts", success:false, error:error.message});
+ }
 }
 
 
