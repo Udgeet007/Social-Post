@@ -27,27 +27,46 @@ const Sidebar = (props) => {
 
   console.log(details);
 
+ 
+
   const handleInputChanger = (e) => {
     // console.log(e.target);
     // console.log(e.target.name);
     // console.log(e.target.value);
     setDetails({ ...details, [e.target.name]: e.target.value });
   };
-
-  const handleFileChanger = (e) => {
+  const [loading,setLoading] = useState(false);
+  const handleFileChanger = async(e) =>{
+    setLoading(true);
     let file = e.target.files[0];
+    console.log(file);
+    let formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset','social_media');
 
-    let reader = new FileReader();
-    reader.readAsDataURL(file);
+    let res = await axios.post(`https://api.cloudinary.com/v1_1/dq8ariioz/upload`,formData);
+    let data = res.data;
+    if(data.secure_url){
+      setLoading(false);
+    }
+    console.log(data.secure_url);
+    setDetails({...details, file:data.secure_url});   
 
-    reader.onload = () => {
-      setDetails({ ...details, file: reader.result });
-    };
+  }
+  // const handleFileChanger = (e) => { // file reader Method
+  //   let file = e.target.files[0];
 
-    reader.onerror = () => {
-      console.log(reader.result);
-    };
-  };
+  //   let reader = new FileReader();
+  //   reader.readAsDataURL(file);
+
+  //   reader.onload = () => {
+  //     setDetails({ ...details, file: reader.result });
+  //   };
+
+  //   reader.onerror = () => {
+  //     console.log(reader.result);
+  //   };
+  // };
 
   const handleSubmit = async () => {
     let res = await axios.post(
@@ -55,7 +74,7 @@ const Sidebar = (props) => {
       details,
       {
         headers: {
-          Authorization: ctx.userInfo.token,
+          "Authorization": ctx.userInfo.token,
         },
       }
     );
@@ -118,6 +137,9 @@ const Sidebar = (props) => {
             </label>
             <input id="file" type="file" onChange={handleFileChanger} hidden />
 
+           <div>
+           {
+           loading===true ? "Loading...": <div>
             {details?.file && (
               <div>
                 {details.file.includes("image") ? (
@@ -131,6 +153,9 @@ const Sidebar = (props) => {
                 )}
               </div>
             )}
+           </div>
+           }
+           </div>
 
             <button
               onClick={handleSubmit}

@@ -7,7 +7,8 @@ const {
   getAllUsers,
   forgetPassword,
   resetPassword,
-  passwordReset
+  passwordReset,
+  getUserDetails
    
 } = require("../controllers/userControllers");
 const checkToken = require("../middleware/checkToken");
@@ -21,5 +22,6 @@ router.get("/getall", getAllUsers);
 router.post("/forgetPassword", forgetPassword);
 router.get('/resetToken/:token',resetPassword);
 router.post('/resetToken/:token',passwordReset);
+router.get('/getUser', checkToken, getUserDetails);
 
 module.exports = router;

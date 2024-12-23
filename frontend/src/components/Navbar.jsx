@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   let userCtx = useContext(UserContext);
@@ -17,7 +17,8 @@ const Navbar = () => {
       <nav className="bg-gradient-to-r fixed top-0 left-0 right-0 from-blue-500 via-indigo-500 to-purple-500 shadow-md z-50">
         <div className="container mx-auto px-4 py-3 flex justify-between  items-center">
           {/* Logo */}
-          <div className="text-2xl font-bold text-white">SocialApp</div>
+          <Link to={'/'} className="text-2xl font-bold text-white">SocialPost</Link>
+         
 
           {/* Search Bar */}
           <div className="hidden md:flex flex-grow mx-4">
@@ -87,7 +88,7 @@ const Navbar = () => {
                   <ul>
                     {login === true && (
                       <li className=" border-b-2 border-b-black py-2 px-5 ">
-                        <button>Profile</button>
+                        <Link to="/profile">Profile</Link>
                       </li>
                     )}
                     {login === false && (

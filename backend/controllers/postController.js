@@ -30,14 +30,24 @@ const deletePost = async(req,res) =>{
 
 const getAllPost = async(req,res) =>{
  try {
-  let posts = await PostCollection.find().populate({path:"userId", select:'name profilePic'});  //userid jaige usercollections se saare details utha kr leaiigi.
+  let posts = await PostCollection.find().sort({createdAt:-1}).populate({path:"userId", select:'name profilePic'});  //userid jaige usercollections se saare details utha kr leaiigi.
   res.status(200).json({msg:"all data fetched successfully", success:true, posts});
  } catch (error) {
   res.json({msg:"error in getting all posts", success:false, error:error.message});
  }
 }
 
+ 
+const getYourPost = async(req,res) =>{
+  try {
+    let userId = req.user;
+    let post = await PostCollection.find({userId:userId});
+    res.json({msg:"post get successfully", success:true, post})
+  } catch (error) {
+    res.json({msg:"error in getting user post", success:false, error:error.message});    
+  }
+}
 
 module.exports = {
-  createPost, updatePost, deletePost, getAllPost
+  createPost, updatePost, deletePost, getAllPost, getYourPost
 }

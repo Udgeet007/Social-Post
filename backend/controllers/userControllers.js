@@ -5,6 +5,7 @@ var salt = bcrypt.genSaltSync(10); // Generate salt for hashing
 let JWT_SECRET = "HarHarMahadev";
 var randomstring = require("randomstring");
 const nodemailer = require("nodemailer");
+const UserCollection = require("../models/UserCollection");
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -264,6 +265,17 @@ const passwordReset = async (req, res) => {
   }
 };
 
+const getUserDetails = async (req,res)=>{
+  let userId = req.user;
+
+ try {
+  let data = await UserCollection.findById(userId);
+  res.json({msg:"user found successfully", success:true, data})
+ } catch (error) {
+  res.json({msg:"error in getting user", success:false, error:error.message});
+ }
+}
+
 module.exports = {
   createUser,
   deleteUser,
@@ -273,4 +285,5 @@ module.exports = {
   forgetPassword,
   resetPassword,
   passwordReset,
+  getUserDetails
 };

@@ -33,7 +33,20 @@ userSchema.add({
     type: String,
     default: null,
   },
-  
+  profilePic:{
+    type:String,
+    default:"https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg"
+  },
+  coverPic:{
+    type:String,
+    default:"https://img.freepik.com/free-photo/woman-holding-leafy-white-pillow-mockup_53876-128613.jpg?semt=ais_hybrid"
+  },
+  bio:{
+    type:String,
+  },
+  city:{
+    type:String
+  }
 });
 
 module.exports = mongoose.model("users", userSchema);

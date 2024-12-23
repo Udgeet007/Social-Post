@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import { useContext } from "react";
 import UserContext from "./context/UserContext";
 import ForgetPassword from "./pages/ForgetPassword";
+import Profile from "./pages/Profile";
 
 function App() {
 // let login = true;
@@ -29,6 +30,7 @@ console.log(userCtx);
           <Route path="/register" element={login===false? <Signup /> : <Navigate to='/'/>} />
           <Route path="/login" element={login===false?<Login />: <Navigate to='/'/>} />
           <Route path="/forgetpassword" element={<ForgetPassword/>}/>
+          <Route path="/profile" element={<Profile/>}/>
         </Routes>
         <ToastContainer />
       </BrowserRouter>  

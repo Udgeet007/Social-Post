@@ -13,11 +13,11 @@ const Home = () => {
   }
   useEffect(() => {
     getAllPosts();
-  });
+  },[]);
 
   return (
     <div>
-      <Sidebar getAllPosts={getAllPosts()} />
+      <Sidebar getAllPosts={getAllPosts} />
       <div className="ml-[210px] border-gray-500 flex flex-col items-center gap-5">
         {posts.map((ele, index) => {
           return (
@@ -54,7 +54,7 @@ const Home = () => {
                     <div className="flex items-center">
                       <img
                         className="object-cover h-10 rounded-full"
-                        src="https://images.unsplash.com/photo-1586287011575-a23134f797f9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=48&q=60"
+                        src={ele.userId.profilePic}
                         alt="Avatar"
                       />
                       <a
