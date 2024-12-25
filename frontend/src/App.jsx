@@ -9,6 +9,7 @@ import { useContext } from "react";
 import UserContext from "./context/UserContext";
 import ForgetPassword from "./pages/ForgetPassword";
 import Profile from "./pages/Profile";
+import FriendProfile from "./pages/FriendProfile";
 
 function App() {
 // let login = true;
@@ -21,7 +22,7 @@ console.log(userCtx);
   return (
     <>
       <BrowserRouter>
-      <div  className="mt-[75px] mb-[60px]">
+      <div  className="mt-[65px] mb-[10px]">
          <Navbar/>
       </div>
      
@@ -31,6 +32,7 @@ console.log(userCtx);
           <Route path="/login" element={login===false?<Login />: <Navigate to='/'/>} />
           <Route path="/forgetpassword" element={<ForgetPassword/>}/>
           <Route path="/profile" element={<Profile/>}/>
+          <Route path="/friendProfile" element={<FriendProfile/>}/>
         </Routes>
         <ToastContainer />
       </BrowserRouter>  

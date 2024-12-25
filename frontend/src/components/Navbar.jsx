@@ -1,31 +1,59 @@
 import { useContext, useState } from "react";
 import UserContext from "../context/UserContext";
 import { Link, useNavigate } from "react-router-dom";
+import { IoSearchSharp } from "react-icons/io5";
+import axios from 'axios';
 
 const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+
   let userCtx = useContext(UserContext);
+  let id = userCtx.userInfo.userId;
   console.log(userCtx);
   let login = userCtx.userInfo.login;
 
   let navigate = useNavigate();
-  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [friendsUsers, setfriendsUsers]= useState([]);
+  console.log(friendsUsers);
+  const handleInputChanger=async(e) =>{
+   let res = await axios.get(`http://localhost:8990/api/users/username?q=${e.target.value}`);
+   let data = res.data;
+    setfriendsUsers(data);
+  }
+ 
   return (
     <div>
       <nav className="bg-gradient-to-r fixed top-0 left-0 right-0 from-blue-500 via-indigo-500 to-purple-500 shadow-md z-50">
-        <div className="container mx-auto px-4 py-3 flex justify-between  items-center">
+        <div className="container mx-auto  px-4 py-3 flex justify-between  items-center">
           {/* Logo */}
-          <Link to={'/'} className="text-2xl font-bold text-white">SocialPost</Link>
-         
+          <Link to={"/"} className="text-2xl font-bold text-white">
+            SocialPost
+          </Link>
 
           {/* Search Bar */}
-          <div className="hidden md:flex flex-grow mx-4">
+          <div className="hidden md:flex w-1/3 items-center relative">
             <input
               type="text"
+              onChange={handleInputChanger}
               placeholder="Search for users..."
-              className="w-[500px] px-4 py-2 mx-auto border  border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <ul className="bg-orange-200 rounded-lg w-full absolute top-full">
+              { 
+                friendsUsers.map((friend,i)=>{
+                  //isse data bejh sakte hae state attribute ka use krke
+                  return friend._id!==id && <Link state={friend._id} onClick={()=>setfriendsUsers([])} to='/friendProfile' key={i} className="cursor-pointer rounded-lg flex px-2 py-2 items-center border-b-2 gap-6">
+                    <img className="w-11 h-11 rounded-full" src={friend.profilePic} alt="" />
+                    <p className="capitalize">{friend.name}</p>  
+                  </Link>
+                })
+              }
+            </ul>
+            <IoSearchSharp
+              className="absolute right-4  top-1/2 cursor-pointer transform -translate-y-1/2 text-gray-500"
+              size={25}
             />
           </div>
 
@@ -79,7 +107,11 @@ const Navbar = () => {
               <img
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="w-10 h-10 rounded-full"
-                src="https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0="
+                src={
+                  userCtx.userInfo?.user?.profilePic
+                    ? userCtx.userInfo.user.profilePic
+                    : "https://media.istockphoto.com/id/1223671392/vector/default-profile-picture-avatar-photo-placeholder-vector-illustration.jpg?s=612x612&w=0&k=20&c=s0aTdmT5aU6b8ot7VKm11DeID6NctRCpB755rA1BIP0="
+                }
                 alt=""
               />
 

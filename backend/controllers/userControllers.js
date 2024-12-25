@@ -90,7 +90,7 @@ const updateUser = async (req, res) => {
     });
   }
 
-  let { name, password } = req.body;
+  let { name, password, profilePic, coverPic, bio, city} = req.body;
 
   try {
     if (password) {
@@ -101,6 +101,7 @@ const updateUser = async (req, res) => {
     let data = await userCollection.findByIdAndUpdate(_id, {
       name: name,
       password: hashedPassword,
+      profilePic, coverPic, bio, city
     });
     res.json({ msg: "user updated successfull", success: true });
   } catch (error) {
@@ -276,6 +277,28 @@ const getUserDetails = async (req,res)=>{
  }
 }
 
+const getUserByName = async(req,res)=>{
+  let name = req.query.q;
+  let query = new RegExp(name);
+
+  if(req.query.q){
+    let data = await userCollection.find({name:query})
+    res.json(data);
+  }else{
+    res.json([])
+  }
+}
+
+const getUserbyId = async(req,res)=>{
+  let id = req.params._id;
+  try {
+    let friend = await userCollection.findById(id).select('-password -email');
+    res.json({msg:"user get successfully", success:true, friend});
+  } catch (error) {
+    res.json({msg:"error in getting user by id", success:false, error:error.message});
+  } 
+}
+
 module.exports = {
   createUser,
   deleteUser,
@@ -285,5 +308,7 @@ module.exports = {
   forgetPassword,
   resetPassword,
   passwordReset,
-  getUserDetails
+  getUserDetails,
+  getUserByName,
+  getUserbyId
 };

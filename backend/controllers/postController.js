@@ -33,6 +33,7 @@ const getAllPost = async(req,res) =>{
   let posts = await PostCollection.find().sort({createdAt:-1}).populate({path:"userId", select:'name profilePic'});  //userid jaige usercollections se saare details utha kr leaiigi.
   res.status(200).json({msg:"all data fetched successfully", success:true, posts});
  } catch (error) {
+
   res.json({msg:"error in getting all posts", success:false, error:error.message});
  }
 }
@@ -41,13 +42,23 @@ const getAllPost = async(req,res) =>{
 const getYourPost = async(req,res) =>{
   try {
     let userId = req.user;
-    let post = await PostCollection.find({userId:userId});
+    let post = await PostCollection.find({userId:userId}).populate("userId");
     res.json({msg:"post get successfully", success:true, post})
   } catch (error) {
     res.json({msg:"error in getting user post", success:false, error:error.message});    
   }
 }
 
+const getfriendPost = async(req,res)=>{
+  let id = req.params._id; 
+try {
+  let posts = await PostCollection.find({userId:id})
+  res.json({msg:"post get successfully", success:true, posts})
+} catch (error) {
+  res.json({msg:"error in getting posts", success:false, error:error.message})
+}
+} 
+
 module.exports = {
-  createPost, updatePost, deletePost, getAllPost, getYourPost
+  createPost, updatePost, deletePost, getAllPost, getYourPost, getfriendPost
 }
