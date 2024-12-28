@@ -1,11 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { useLocation } from "react-router-dom";
+import UserContext from "../context/UserContext";
 
 const FriendProfile = () => {
 
+  let ctx = useContext(UserContext);
+  console.log(ctx)
+
+  let userId = ctx.userInfo.userId;
   let location = useLocation();
   console.log(location);
 
@@ -37,6 +42,17 @@ const FriendProfile = () => {
     getFriendPosts()
   },[location.state]);
 
+  const handleFollow = async() =>{
+    let res = await axios.post(`http://localhost:8990/api/users/followUser/${friend._id}`,{},{
+      headers:{
+        'Authorization':ctx.userInfo.token
+      }
+    })
+    let data = res.data;
+    console.log(data);
+     getFriendUser();
+  }
+
   return (
     <div className="w-[80%] mx-auto">
     <div className="bg-gradient-to-r from-blue-200 to-cyan-200">
@@ -58,7 +74,18 @@ const FriendProfile = () => {
         <h1 className="profileName capitalize text-center font-bold text-2xl">
           {friend?.bio}
         </h1>
+      
+
+        <div className="flex justify-center gap-10">
+          <div className="flex flex-col items-center font-bold"><p>Followers</p> <span>{friend?.followers?.length}</span></div>
+          <div  className="flex flex-col items-center font-bold"><p>Followings</p> <span>{friend?.followings?.length}</span></div>
+        </div>
       </div>
+      <div className="flex justify-center">
+     {friend?.followers?.includes(userId) ?  <button onClick={handleFollow} className="bg-orange-400 px-4 py-2 hover:bg-blue-600 rounded-md text-white" >Unfollow</button>
+     :
+        <button onClick={handleFollow} className="bg-orange-400 px-4 py-2 hover:bg-blue-600 rounded-md text-white" >Follow</button>}  
+        </div>
     </div>
     </div>
   );

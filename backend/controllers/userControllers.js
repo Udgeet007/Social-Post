@@ -299,6 +299,29 @@ const getUserbyId = async(req,res)=>{
   } 
 }
 
+const followUser = async(req,res)=>{
+    let userId = req.user;
+    let friendId = req.params._id;
+    let userDetail = await userCollection.findById(userId);
+    let friendDetails = await userCollection.findById(friendId);
+
+    // console.log(userDetail);
+   
+    if(!userDetail.followings.includes(friendId)){
+      userDetail.followings.push(friendId);
+      friendDetails.followers.push(userId);
+      await userDetail.save();
+      await friendDetails.save(); 
+      return res.json({msg:"user followed successfully", success:true})
+    }else{
+      userDetail.followings.pull(friendId);
+      friendDetails.followers.pull(userId);
+      await userDetail.save();
+      await friendDetails.save();
+      return res.json({msg:"user unfollowed successfully", success:true})
+    }
+}
+
 module.exports = {
   createUser,
   deleteUser,
@@ -310,5 +333,6 @@ module.exports = {
   passwordReset,
   getUserDetails,
   getUserByName,
-  getUserbyId
+  getUserbyId,
+  followUser
 };

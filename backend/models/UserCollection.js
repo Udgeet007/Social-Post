@@ -46,7 +46,15 @@ userSchema.add({
   },
   city:{
     type:String
-  }
+  },
+  followers:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'users'
+  }],
+  followings:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'users'
+  }]
 });
 
 module.exports = mongoose.model("users", userSchema);

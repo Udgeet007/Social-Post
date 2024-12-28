@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
 import { CiCamera } from "react-icons/ci";
 import { toast } from "react-toastify";
+import { FiUserPlus } from "react-icons/fi";
 
 const Profile = () => {
   let ctx = useContext(UserContext);
@@ -129,17 +130,27 @@ const Profile = () => {
         </div>
       </div>
 
-      <div>
+      <div className="flex flex-col items-center">
         <h1 className="profileName capitalize  mt-[80px] text-center font-bold text-2xl">
           {userInfo?.name}
         </h1>
         <h1 className="profileName capitalize text-center font-bold text-2xl">
           {userInfo?.bio}
         </h1>
+      
+        <div className="flex gap-9 ">
+        <div className="flex flex-col items-center"><h3 className="font-bold">Followers</h3><p>{userInfo?.followers?.length}</p></div>
+        <div className="flex flex-col items-center"><h3 className="font-bold">Following</h3><p>{userInfo?.followings?.length}</p></div>
+        </div>
+        <div className="flex gap-2 mb-1 cursor-pointer">
+          <button className="py-1 px-2 bg-cyan-50 rounded-md ">Edit Profile</button>
+          <button className="py-1 px-2 bg-cyan-50 rounded-md ">Share Profile</button>
+          <FiUserPlus className="" size={"25px"}/>
+        </div>
       </div>
     </div>
       {/* Card Code Starts Here */}
-      <div className="flex mt-5">
+      <div className="flex mt-5 ">
         <div className="w-max ms-6  h-max p-4 bg-gradient-to-r from-lime-400 to-lime-500">
           <form action="">
             <label className="w-[70px] mb-4 inline-block" htmlFor="">Name:</label>
