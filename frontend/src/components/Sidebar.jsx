@@ -4,8 +4,12 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import UserContext from "../context/UserContext";
 import { toast } from "react-toastify";
+import {useNavigate} from 'react-router-dom';
 
 const Sidebar = (props) => {
+
+  let navigate = useNavigate()
+
   let ctx = useContext(UserContext);
   console.log(ctx);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -100,10 +104,15 @@ const Sidebar = (props) => {
       <ul>
         <li
           onClick={showModal}
-          className="text-center cursor-pointer  p-2 border-y-2 border-green-300"
-        >
+          className="text-center cursor-pointer  p-2 border-b-2 border-green-300"
+        > 
           Create
         </li>
+        <li onClick={()=> navigate('/profile')} 
+          className="text-center cursor-pointer  p-2 border-b-2 border-green-300"
+        >
+          Profile
+        </li> 
         <Modal
           title=""
           open={isModalOpen}

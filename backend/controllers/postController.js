@@ -92,12 +92,50 @@ const commentPost = async(req,res)=>{
  }
 }
 
+
+const deleteComment = async(req,res) =>{
+  let {commentId, postId} = req.params;
+ try {
+  let post = await PostCollection.findById(postId);
+  let filteredArr = post.comments.filter((ele) => ele._id.toString()!==commentId);
+  post.comments = filteredArr;
+  await post.save();
+
+  res.json({msg:"comment deleted successfully", success:true})
+ } catch (error) {
+  res.json({msg:"error in deleting post", success:false, error:error.message})
+ }
+};
+
+
+const likesorDislike = async(req,res) =>{
+  const postId = req.params.postId;
+ const userId = req.user;
+
+ try {
+  let post = await PostCollection.findById(postId)
+ if(!post.likes.includes(userId)){
+   post.likes.push(userId);
+   await post.save()
+   res.json({msg:"post liked successfully", success:true})
+ }else{
+  post.likes.pull(userId)
+  await post.save()
+  res.json({msg:"post disliked successfully", success:false})
+ }
+ } catch (error) {
+  res.json({msg:"error in like post", success:false, error:error.message});
+ }
+}
+
 module.exports = {
   createPost,
   updatePost,
   deletePost,
   getAllPost,
-  getYourPost,
+  getYourPost, 
   getfriendPost,
-  commentPost
+  commentPost,
+  deleteComment,
+  likesorDislike
 };

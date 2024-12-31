@@ -4,11 +4,13 @@ import { useContext, useEffect, useState } from "react";
 import UserContext from "../context/UserContext";
 import { GoComment } from "react-icons/go";
 import { CiHeart } from "react-icons/ci";
-// import { FaHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import { PiShareFatLight } from "react-icons/pi";
 import { Button, Modal } from "flowbite-react";
 import { IoMdSend } from "react-icons/io";
 import { toast } from "react-toastify";
+import { formatDistanceToNow} from "date-fns";
+import { MdDeleteOutline } from "react-icons/md";
 
 
 const Home = () => {
@@ -65,11 +67,45 @@ let token = ctx.userInfo.token;
     }
   } 
 
+  const handleCommentDelete = async(comment, post) =>{
+    let commentId = comment._id;
+    let postId = post._id;
+    console.log(commentId);
+    console.log(postId);
+
+    let res = await axios.delete(`http://localhost:8990/api/posts/deleteComment/${commentId}/${postId}`)
+    let data = res.data; 
+
+    if(data.success){
+      getAllPosts();
+      let filteredArr = selectedPost.comments.filter((ele) =>ele._id!==comment._id);
+      let copyObj = {...selectedPost}
+      copyObj.comments = filteredArr 
+      setselectedPost(copyObj);
+      toast.success(data.msg,{position:'top-center'});
+    }
+  }
+
+   const handleLikes = async(postId) =>{
+    console.log(postId)
+    let res = await axios.put(`http://localhost:8990/api/posts/likepost/${postId}`,{},{
+      headers:{
+        'Authorization':token
+      }
+    })
+    let data = res.data
+    console.log(data)
+    if(data.success){
+      getAllPosts();
+      toast.success(data.msg,{position:"bottom-right"})  
+    }
+   }
+
 
   return (
-    <div>
+    <div >
       <Sidebar getAllPosts={getAllPosts} />
-      <div className="ml-[210px] border-gray-500 flex flex-col items-center gap-5">
+      <div className="ml-[210px] border-gray-500 flex flex-col items-center mx-auto gap-5">
         {posts.map((ele, index) => {
           return (
             <div
@@ -95,7 +131,10 @@ let token = ctx.userInfo.token;
                       </a>
                     </div>
                     <span className="mx-1 text-xs text-gray-600 dark:text-gray-300">
-                      21 SEP 2015
+                    <p>
+                      {/* time ago section */}
+                      {formatDistanceToNow(new Date(ele.createdAt), { addSuffix: true })}
+                    </p>
                     </span>
                   </div>
                 </div>
@@ -125,11 +164,15 @@ let token = ctx.userInfo.token;
                 </div>
 
                 <div className="flex gap-2 ms-4 items-center">
-                <CiHeart  className="cursor-pointer" size={30}/>
-                {/* <FaHeart color="red" fill="red" size={24}/> */}
+                  {
+                    ele.likes.includes(user._id) ?
+                    <FaHeart onClick={()=>handleLikes(ele._id)} color="red" fill="red" size={24}/>  :
+                <CiHeart onClick={()=>handleLikes(ele._id)}  className="cursor-pointer" size={30}/>
+                  }
+                  <sup>{ele.likes.length}</sup>
                 <GoComment className="cursor-pointer" onClick={()=>handleComment(ele)}  size={26}/> 
-                <PiShareFatLight className="cursor-pointer" size={30}/>
-             
+                  <sup className="bg-blue-500 rounded-full w-5 h-5 flex justify-center items-center">{ele.comments.length}</sup>
+                <PiShareFatLight className="cursor-pointer" size={30}/>  
               </div> 
             
               </div>
@@ -151,16 +194,18 @@ let token = ctx.userInfo.token;
           selectedPost?.comments?.length>0? <div className="space-y-6">
           {
            selectedPost?.comments?.map((item,i) =>{
-             return <div key={i} className="flex flex-col gap-3">
+             return <div key={i} className="border relative rounded-md p-3 ml-3 my-3">
               <div className="flex gap-3 items-center">
-              <img src={item.user.profilePic} className="h-7 w-7 rounded-full border-2" alt="" />
-              <p className="capitalize text-xs">{item.user.name}</p>
+              <img src={item.user.profilePic} className="object-cover w-8 h-8 rounded-full border-2 border-emerald-400 shadow-emerald-400" alt="" />
+              <h3 className="font-bold">{item.user.name}</h3>
               </div>
-               <p>{item.text}</p>
+               <p className="text-gray-600 mt-2">{item.text}</p>
+
+              {user._id===item.user._id && <MdDeleteOutline onClick={()=>handleCommentDelete(item, selectedPost)} className="absolute top-2 text-lg cursor-pointer right-5"/>}
              </div>
            })
           }
-           </div>
+           </div> 
            : <h1 className="capitialize text-center text-xl">No Comments Available</h1>
          }
         </Modal.Body>
