@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import { CiHeart } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
@@ -96,6 +96,8 @@ const FriendProfile = () => {
      {friend?.followers?.includes(userId) ?  <button onClick={handleFollow} className="bg-orange-400 px-4 py-2 hover:bg-blue-600 rounded-md text-white" >Unfollow</button>
      :
         <button onClick={handleFollow} className="bg-orange-400 px-4 py-2 hover:bg-blue-600 rounded-md text-white" >Follow</button>}  
+
+        <Link to={'/chat'} state={friend} className="bg-purple-600 ms-2 px-4 py-2 rounded-md hover:bg-purple-800 text-white">Chat</Link>
         </div>
     </div>
     <div className="flex flex-col items-center gap-4 mt-7">

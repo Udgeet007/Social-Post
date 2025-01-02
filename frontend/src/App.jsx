@@ -10,6 +10,7 @@ import UserContext from "./context/UserContext";
 import ForgetPassword from "./pages/ForgetPassword";
 import Profile from "./pages/Profile";
 import FriendProfile from "./pages/FriendProfile";
+import Chat from "./pages/Chat";
 
 function App() {
 // let login = true;
@@ -33,6 +34,7 @@ console.log(userCtx);
           <Route path="/forgetpassword" element={<ForgetPassword/>}/>
           <Route path="/profile" element={<Profile/>}/>
           <Route path="/friendProfile" element={<FriendProfile/>}/>
+          <Route path='/chat' element={<Chat/>}/>
         </Routes>
         <ToastContainer />
       </BrowserRouter>  

@@ -7,6 +7,7 @@ const connection = require('./db'); //connectToDB ... function
 connection();
 let userRouter = require('./routes/userRoutes');
 let postRouter = require('./routes/postRoutes');
+let messageRouter = require('./routes/messageRoutes');
 
 app.use(cors());
 app.use(express.json({limit: '100mb'}));
@@ -18,6 +19,7 @@ app.get('/',(req,res)=>{
 
 app.use('/api/users',userRouter);
 app.use('/api/posts', postRouter);
+app.use('/api/message', messageRouter);
 
 
 // app.post("/create",(req,res)=>{
