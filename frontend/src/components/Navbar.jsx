@@ -29,33 +29,35 @@ const Navbar = () => {
         <div className="container mx-auto  px-4 py-3 flex justify-between  items-center">
           {/* Logo */}
           <Link to={"/"} className="text-2xl font-bold text-white">
-            SocialPost
+          Connectify
           </Link>
 
           {/* Search Bar */}
-          <div className="hidden md:flex w-1/3 items-center relative">
-            <input
-              type="text"
-              onChange={handleInputChanger}
-              placeholder="Search for users..."
-              className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-            <ul className="bg-orange-200 rounded-lg w-full absolute top-full">
-              { 
-                friendsUsers.map((friend,i)=>{
-                  //isse data bejh sakte hae state attribute ka use krke
-                  return friend._id!==id && <Link state={friend._id} onClick={()=>setfriendsUsers([])} to='/friendProfile' key={i} className="cursor-pointer rounded-lg flex px-2 py-2 items-center border-b-2 gap-6">
-                    <img className="w-11 h-11 rounded-full" src={friend.profilePic} alt="" />
-                    <p className="capitalize">{friend.name}</p>  
-                  </Link>
-                })
-              }
-            </ul>
-            <IoSearchSharp
-              className="absolute right-4  top-1/2 cursor-pointer transform -translate-y-1/2 text-gray-500"
-              size={25}
-            />
-          </div>
+         {
+          login===true &&  <div className="hidden md:flex w-1/4 items-center relative">
+          <input
+            type="text"
+            onChange={handleInputChanger}
+            placeholder="Search"
+            className="w-full px-4 py-2 rounded-lg border border-gray-300  focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <ul className="bg-orange-200 rounded-lg w-full absolute top-full">
+            { 
+              friendsUsers.map((friend,i)=>{
+                //isse data bejh sakte hae state attribute ka use krke
+                return friend._id!==id && <Link state={friend._id} onClick={()=>setfriendsUsers([])} to='/friendProfile' key={i} className="cursor-pointer rounded-lg flex px-2 py-2 items-center border-b-2 gap-6">
+                  <img className="w-11 h-11 rounded-full" src={friend.profilePic} alt="" />
+                  <p className="capitalize">{friend.name}</p>  
+                </Link>
+              })
+            }
+          </ul>
+          <IoSearchSharp
+            className="absolute right-4  top-1/2 cursor-pointer transform -translate-y-1/2 text-gray-500"
+            size={25}
+          />
+        </div>
+         }
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
@@ -116,7 +118,7 @@ const Navbar = () => {
               />
 
               {showDropdown === true && (
-                <div className="dropDownBox  absolute top-[120%] right-0 bg-gradient-to-r  from-blue-500 via-purple-500 to-pink-500 ">
+                <div className="dropDownBox  absolute top-[120%] right-0 text-white bg-blue-500">
                   <ul>
                     {login === true && (
                       <li className=" border-b-2 border-b-black py-2 px-5 ">

@@ -5,6 +5,10 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import { toast } from "react-toastify";
 import {useNavigate} from 'react-router-dom';
+import { CgProfile } from "react-icons/cg";
+import { FaRegPlusSquare } from "react-icons/fa";
+import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
+import { GoHomeFill } from "react-icons/go";
 
 const Sidebar = (props) => {
 
@@ -100,19 +104,26 @@ const Sidebar = (props) => {
   };
 
   return (
-    <div className="bg-blue-400 font-normal text-white fixed left-0 top-[66px] w-[200px] h-full">
+    <div className=" bg-[#7c3aed] font-normal text-white fixed left-0 top-[66px] w-[200px] h-max">
       <ul>
         <li
           onClick={showModal}
           className="text-center cursor-pointer  p-2 border-b-2 border-green-300"
         > 
-          Create
+       
+          <FaRegPlusSquare size={28} className="mx-auto"/>
         </li>
         <li onClick={()=> navigate('/profile')} 
-          className="text-center cursor-pointer  p-2 border-b-2 border-green-300"
+          className="text-center cursor-pointer relative  p-2 border-b-2 border-green-300"
         >
-          Profile
+          <CgProfile size={28} className="mx-auto"/>
         </li> 
+        <li className="text-center cursor-pointer relative  p-2 border-b-2 border-green-300">
+        <IoChatbubbleEllipsesOutline size={28} className="mx-auto"/>
+        </li>
+        <li onClick={()=> navigate('/')} className="text-center cursor-pointer relative  p-2 border-b-2 border-green-300">
+        <GoHomeFill size={28} className="mx-auto"/>
+        </li>
         <Modal
           title=""
           open={isModalOpen}

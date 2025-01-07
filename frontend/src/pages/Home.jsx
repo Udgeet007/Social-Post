@@ -11,6 +11,7 @@ import { IoMdSend } from "react-icons/io";
 import { toast } from "react-toastify";
 import { formatDistanceToNow} from "date-fns";
 import { MdDeleteOutline } from "react-icons/md";
+import Footer from "../components/Footer";
 
 
 const Home = () => {
@@ -103,7 +104,7 @@ let token = ctx.userInfo.token;
 
 
   return (
-    <div >
+    <div style={{ background: 'linear-gradient(120deg, #c6ffdd 0%, #fbd786 100%)' }}>
       <Sidebar getAllPosts={getAllPosts} />
       <div className="ml-[210px] border-gray-500 flex flex-col items-center mx-auto gap-5">
         {posts.map((ele, index) => {
@@ -216,6 +217,10 @@ let token = ctx.userInfo.token;
         </Modal.Footer> 
       </Modal>
       </div>
+      <div className="mt-4">
+         <Footer/>
+      </div>
+     
     </div>
   );
 };

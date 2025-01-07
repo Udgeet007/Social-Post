@@ -121,7 +121,7 @@ const likesorDislike = async(req,res) =>{
  }else{
   post.likes.pull(userId)
   await post.save()
-  res.json({msg:"post disliked successfully", success:false})
+  res.json({msg:"post disliked successfully", success:true})
  }
  } catch (error) {
   res.json({msg:"error in like post", success:false, error:error.message});
