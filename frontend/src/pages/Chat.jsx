@@ -3,8 +3,14 @@ import { useLocation } from "react-router-dom";
 import UserContext from "../context/UserContext";
 import axios from "axios";
 import { useRef } from "react";
+import { io } from "socket.io-client";
+import ScrollToBottom from 'react-scroll-to-bottom';
+import { formatDistanceToNow} from "date-fns";
 
 const Chat = () => {
+  // let ENDPOINT = "http://localhost:8990";
+  const socketRef = useRef();
+  // let socket = io(ENDPOINT, {transports:['websocket']});
   const location = useLocation();
   let userStore = useContext(UserContext);
   let friendId = location.state._id;
@@ -32,8 +38,15 @@ const Chat = () => {
     getChat();
   }, []);
 
+  useEffect(() =>{
+    socketRef.current = io("http://localhost:8990", {transports: ["websocket"]});
+    socketRef.current.emit('addUser',userStore?.userInfo.userId);  
+  },[]);
+
 
   const handleSend = async() =>{  
+    socketRef.current.emit('sendMessage',{friendId, userId:userStore?.userInfo?.userId, message:inputRef.current.value})
+
     let obj = {
       text:inputRef.current.value
     }
@@ -51,9 +64,24 @@ const Chat = () => {
     }
   }
 
+  const [newMessage, setnewMessage] = useState("");
+
+  useEffect(()=>{
+   socketRef.current.on('getMessage', ({userId, friendId, message})=>{
+    console.log({userId, friendId, message});
+    setnewMessage({userId, friendId, text:message, createdAt:Date.now()})
+  }); 
+  },[]);
+
+  useEffect(()=>{
+    if(newMessage){
+      setallchat([...allchat, newMessage])
+    }
+  },[newMessage]);
+
   return (
     <div className="">
-      <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-[670px]">
+     <ScrollToBottom className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-[670px]">
         <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-200">
           <div className="relative flex items-center space-x-4">
             <div className="relative">
@@ -152,6 +180,7 @@ const Chat = () => {
                   <span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">
                   {ele.text}
                   </span>
+                  <p>{formatDistanceToNow(new Date(ele.createdAt), { addSuffix: true })}</p>
                 </div>
               </div>
               <img
@@ -167,6 +196,7 @@ const Chat = () => {
                 <span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">
                   {ele.text}
                 </span>
+                <p>{formatDistanceToNow(new Date(ele.createdAt), { addSuffix: true })}</p>
               </div>
             </div>
             <img
@@ -292,7 +322,8 @@ const Chat = () => {
             </div>
           </div>
         </div>
-      </div>
+       </ScrollToBottom>
+     
     </div>
   );
 };

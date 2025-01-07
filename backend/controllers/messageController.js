@@ -31,14 +31,14 @@ let getChat = async (req, res) => {
   let friendId = req.params.friendId; // Correctly access friendId
 
   try {
-    let conversation = await Conversation.findOne({ members: { $all: [userId, friendId] } }).populate('messages');
-
-    // Check if conversation exists
-    if (!conversation) {
-      return res.json({ msg: "No conversation found", success: false });
+   let messages = await Conversation.findOne({ members: {$all: [userId, friendId] }}).populate('messages')
+    console.log(messages);
+    if(!messages){
+      messages={
+        messages:[]
     }
-
-    res.json({ msg: "get successfully", success: true, chat: conversation.messages });
+    }
+    res.json({ msg: "get successfully", success: true, chat: messages.messages });
   } catch (error) {
     res.json({ msg: "error in get chat", success: false, error: error.message });
   }
