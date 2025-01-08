@@ -4,6 +4,7 @@ const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 const port = 8990;
 const cors = require('cors');
+require('dotenv').config();
 
 const connection = require('./db'); //connectToDB ... function
 connection();
