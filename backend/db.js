@@ -1,18 +1,15 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
-const connectToDB = async() => {
-
+const connectToDB = async () => {
   try {
-    let data = await mongoose
-    .connect("mongodb://localhost:27017/Social_Media_App");
-    console.log('Connected to mongodb successfully');
+    console.log("Connecting to MongoDB...");
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("Connected to MongoDB successfully");
   } catch (error) {
-    console.log('error in connecting mongodb')
+    console.error("Error in connecting to MongoDB:", error.message);
+    process.exit(1); // Exit process if connection fails
   }
- 
-    // .then(() => console.log("Connected to mongodb successfully"))
-    // .catch(() => console.log("error in connecting mongodb"));
 };
-
 
 module.exports = connectToDB;
