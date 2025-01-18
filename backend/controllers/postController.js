@@ -51,7 +51,7 @@ const getAllPost = async (req, res) => {
 const getYourPost = async (req, res) => {
   try {
     let userId = req.user;
-    let post = await PostCollection.find({ userId: userId }).populate("userId");
+    let post = await PostCollection.find({ userId: userId }).populate("userId").sort({ createdAt: -1 }); // Sort by createdAt in descending order;
     res.json({ msg: "post get successfully", success: true, post });
   } catch (error) {
     res.json({

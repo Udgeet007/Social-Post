@@ -52,6 +52,7 @@ app.get('/',(req,res)=>{
 app.use('/api/users',userRouter);
 app.use('/api/posts', postRouter);
 app.use('/api/message', messageRouter);
+// http://localhost/3000/api/users/userRouter
 
 server.listen(port, ()=>{
   console.log(`Server is running on port:${port}`);
